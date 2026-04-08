@@ -119,6 +119,11 @@ async function spin() {
     const drawResult = await api.draw(state.currentKid.id);
     result.value = drawResult;
 
+    // Update currentKid points locally (backend already deducted 2 points)
+    if (state.currentKid) {
+      state.currentKid.points -= 2;
+    }
+
     // Find the winning sector
     const prizeIndex = state.prizes.findIndex(p => p.id === drawResult.id);
     const sector = sectors.value[prizeIndex];
