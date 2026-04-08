@@ -76,11 +76,11 @@ function drawWheel() {
     ctx.stroke();
 
     const midAngle = (startAngle + endAngle) / 2;
-    const iconRadius = radius * 0.65;
+    const iconRadius = radius * 0.85;
     const iconX = centerX + Math.cos(midAngle) * iconRadius;
     const iconY = centerY + Math.sin(midAngle) * iconRadius;
 
-    ctx.font = '26px Arial';
+    ctx.font = '24px Arial';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(sector.prize.icon, iconX, iconY);
@@ -112,6 +112,7 @@ async function spin() {
   if (spinning.value) return;
 
   spinning.value = true;
+  rotation.value = 0; // 重置转盘角度
   result.value = null;
   showResult.value = false;
 
@@ -132,7 +133,10 @@ async function spin() {
     // Calculate rotation - pointer is at top (0 degrees visually)
     const extraRotations = Math.floor(Math.random() * 3 + 4) * 360;
     const finalRotation = rotation.value + extraRotations + (360 - targetAngle);
-
+    // Add console output for debugging
+    console.log('extraRotations:', extraRotations);
+    console.log('finalRotation:', finalRotation);
+    console.log('rotation:', rotation.value);
     rotation.value = finalRotation;
 
     setTimeout(() => {
@@ -183,7 +187,7 @@ watch(() => state.prizes, () => {
 
         <!-- Wheel -->
         <div class="rounded-full overflow-hidden transition-transform origin-center"
-          :style="{ transform: `rotate(${rotation}deg)`, transitionDuration: spinning ? '4s' : '0ms', transitionTimingFunction: 'ease-out' }">
+          :style="{ transform: `rotate(${rotation}deg)`, transitionDuration: (spinning && rotation !== 0) ? '4s' : '0ms', transitionTimingFunction: 'ease-out' }">
           <canvas ref="wheelCanvas" width="480" height="480" />
         </div>
 
