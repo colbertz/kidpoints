@@ -31,7 +31,4 @@ export interface Record {
   reversed_at?: string;
 }
 
-export interface DrawResult {
-  prize: Prize;
-  kid: Kid;
-}
+export type DrawResult = Prize;

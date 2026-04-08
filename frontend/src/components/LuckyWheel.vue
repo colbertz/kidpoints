@@ -101,6 +101,10 @@ async function spin() {
     alert('请先选择一个小朋友');
     return;
   }
+  if (state.currentKid.points < 2) {
+    alert('积分不足，需要至少 2 分才能抽奖');
+    return;
+  }
   if (state.prizes.length === 0) {
     alert('暂无奖项配置');
     return;
@@ -116,7 +120,7 @@ async function spin() {
     result.value = drawResult;
 
     // Find the winning sector
-    const prizeIndex = state.prizes.findIndex(p => p.id === drawResult.prize.id);
+    const prizeIndex = state.prizes.findIndex(p => p.id === drawResult.id);
     const sector = sectors.value[prizeIndex];
     const targetAngle = sector.startAngle + (sector.endAngle - sector.startAngle) / 2;
 
@@ -212,9 +216,9 @@ watch(() => state.prizes, () => {
     <!-- Result Modal -->
     <div v-if="showResult && result" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div class="bg-white rounded-xl p-8 text-center max-w-sm">
-        <div class="text-6xl mb-4">{{ result.prize.icon }}</div>
+        <div class="text-6xl mb-4">{{ result.icon }}</div>
         <h3 class="text-xl font-bold text-purple-600 mb-2">恭喜获得</h3>
-        <p class="text-2xl font-bold mb-6">{{ result.prize.name }}</p>
+        <p class="text-2xl font-bold mb-6">{{ result.name }}</p>
         <button @click="closeResult" class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
           确定
         </button>
