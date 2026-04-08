@@ -133,10 +133,6 @@ async function spin() {
     // Calculate rotation - pointer is at top (0 degrees visually)
     const extraRotations = Math.floor(Math.random() * 3 + 4) * 360;
     const finalRotation = rotation.value + extraRotations + (360 - targetAngle);
-    // Add console output for debugging
-    console.log('extraRotations:', extraRotations);
-    console.log('finalRotation:', finalRotation);
-    console.log('rotation:', rotation.value);
     rotation.value = finalRotation;
 
     setTimeout(() => {
