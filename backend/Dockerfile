@@ -9,6 +9,5 @@ FROM alpine:latest
 RUN apk --no-cache add ca-certificates sqlite-libs
 WORKDIR /app
 COPY --from=builder /app/points-app .
-COPY points.db .
 EXPOSE 8080
 CMD ["./points-app"]
