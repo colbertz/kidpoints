@@ -13,26 +13,26 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Login to Docker Hub
+      - name: Login to Aliyun ACR
         uses: docker/login-action@v3
         with:
-          registry: docker.io
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ${{ secrets.ALIYUN_REGISTRY }}
+          username: ${{ secrets.ALIYUN_REGISTRY_USER }}
+          password: ${{ secrets.ALIYUN_REGISTRY_PASSWORD }}
 
       - name: Build and Push Backend
         uses: docker/build-push-action@v5
         with:
           context: ./backend
           push: true
-          tags: docker.io/${{ secrets.DOCKER_USERNAME }}/points-app-backend:latest
+          tags: ${{ secrets.ALIYUN_REGISTRY }}/points-app-backend:latest
 
       - name: Build and Push Frontend
         uses: docker/build-push-action@v5
         with:
           context: ./frontend
           push: true
-          tags: docker.io/${{ secrets.DOCKER_USERNAME }}/points-app-frontend:latest
+          tags: ${{ secrets.ALIYUN_REGISTRY }}/points-app-frontend:latest
 
       - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@v1
