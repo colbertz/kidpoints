@@ -21,7 +21,12 @@ function selectKid(kid: typeof state.currentKid) {
         ? 'border-purple-500 bg-purple-50 text-purple-700'
         : 'border-gray-200 bg-white text-gray-600 hover:border-purple-300'"
     >
-      <span class="text-2xl mr-2">{{ kid.avatar }}</span>
+      <img
+        v-if="kid.avatar.startsWith('/uploads')"
+        :src="kid.avatar"
+        class="w-8 h-8 rounded-full mr-2 object-cover"
+      />
+      <span v-else class="text-2xl mr-2">{{ kid.avatar }}</span>
       <span class="font-medium">{{ kid.name }}</span>
     </button>
   </div>

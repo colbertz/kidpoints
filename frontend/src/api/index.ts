@@ -1,6 +1,6 @@
 import type { Kid, Behavior, Prize, Record, DrawResult } from '../types';
 
-const API_BASE = import.meta.env.VITE_API_BASE;
+export const API_BASE = (import.meta.env.VITE_API_BASE as string) || '';
 
 // Kids
 export async function getKids(): Promise<Kid[]> {
@@ -9,7 +9,7 @@ export async function getKids(): Promise<Kid[]> {
   return res.json();
 }
 
-export async function createKid(data: { name: string; avatar: string }): Promise<Kid> {
+export async function createKid(data: { name: string; avatar: string; points?: number }): Promise<Kid> {
   const res = await fetch(`${API_BASE}/kids`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -17,6 +17,18 @@ export async function createKid(data: { name: string; avatar: string }): Promise
   });
   if (!res.ok) throw new Error('Failed to create kid');
   return res.json();
+}
+
+export async function uploadAvatar(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append('avatar', file);
+  const res = await fetch(`${API_BASE}/kids/upload-avatar`, {
+    method: 'POST',
+    body: formData,
+  });
+  if (!res.ok) throw new Error('Failed to upload avatar');
+  const data = await res.json();
+  return data.avatar;
 }
 
 export async function updateKid(id: number, data: { name?: string; avatar?: string }): Promise<Kid> {

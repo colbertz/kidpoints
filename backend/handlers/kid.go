@@ -2,13 +2,19 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
+	"time"
 
 	"github.com/gin-gonic/gin"
 
 	"points-app/models"
 	"points-app/service"
 )
+
+var uploadDir = "./uploads"
 
 type KidHandler struct {
 	kidService *service.KidService
@@ -199,4 +205,49 @@ func (h *KidHandler) DeleteKid(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusNoContent, nil)
+}
+
+func ensureUploadDir() error {
+	if _, err := os.Stat(uploadDir); os.IsNotExist(err) {
+		return os.MkdirAll(uploadDir, 0755)
+	}
+	return nil
+}
+
+func (h *KidHandler) UploadAvatar(c *gin.Context) {
+	if err := ensureUploadDir(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create upload directory"})
+		return
+	}
+
+	file, err := c.FormFile("avatar")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "no file uploaded"})
+		return
+	}
+
+	// Validate file type
+	ext := filepath.Ext(file.Filename)
+	allowedExts := map[string]bool{".jpg": true, ".jpeg": true, ".png": true, ".gif": true, ".webp": true}
+	if !allowedExts[ext] {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid file type, allowed: jpg, png, gif, webp"})
+		return
+	}
+
+	// Max size 5MB
+	if file.Size > 5*1024*1024 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "file too large, max 5MB"})
+		return
+	}
+
+	filename := fmt.Sprintf("%d%s", time.Now().UnixNano()/1000000, ext)
+	dst := filepath.Join(uploadDir, filename)
+
+	if err := c.SaveUploadedFile(file, dst); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to save file"})
+		return
+	}
+
+	avatarURL := fmt.Sprintf("/uploads/%s", filename)
+	c.JSON(http.StatusOK, gin.H{"avatar": avatarURL})
 }

@@ -47,6 +47,10 @@ func Setup() *gin.Engine {
 	r.DELETE("/api/kids/:id", kidHandler.DeleteKid)
 	r.POST("/api/kids/points/add", kidHandler.AddPoints)
 	r.POST("/api/kids/points/sub", kidHandler.SubPoints)
+	r.POST("/api/kids/upload-avatar", kidHandler.UploadAvatar)
+
+	// Serve uploaded files
+	r.Static("/uploads", "./uploads")
 
 	r.GET("/api/behaviors", behaviorHandler.GetBehaviors)
 	r.POST("/api/behaviors", behaviorHandler.CreateBehavior)

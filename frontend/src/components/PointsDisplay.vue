@@ -7,7 +7,12 @@ const state = useStore();
 <template>
   <div class="text-center py-8">
     <div v-if="state.currentKid" class="inline-flex flex-col items-center">
-      <span class="text-6xl mb-2">{{ state.currentKid.avatar }}</span>
+      <img
+        v-if="state.currentKid.avatar.startsWith('/uploads')"
+        :src="state.currentKid.avatar"
+        class="w-20 h-20 rounded-full mb-2 object-cover"
+      />
+      <span v-else class="text-6xl mb-2">{{ state.currentKid.avatar }}</span>
       <span class="text-xl text-gray-600 mb-4">{{ state.currentKid.name }}</span>
       <div class="text-7xl font-bold text-purple-600">
         {{ state.currentKid.points }}

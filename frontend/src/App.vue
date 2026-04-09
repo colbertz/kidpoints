@@ -8,10 +8,11 @@ import LuckyWheel from './components/LuckyWheel.vue';
 import BehaviorManager from './components/BehaviorManager.vue';
 import PrizeManager from './components/PrizeManager.vue';
 import RecordList from './components/RecordList.vue';
+import KidManager from './components/KidManager.vue';
 import * as api from './api';
 
 const state = useStore();
-const activeTab = ref<'main' | 'behaviors' | 'prizes' | 'records'>('main');
+const activeTab = ref<'main' | 'kids' | 'behaviors' | 'prizes' | 'records'>('main');
 
 onMounted(async () => {
   await state.fetchKids();
@@ -33,13 +34,13 @@ onMounted(async () => {
       <!-- Tab Navigation -->
       <nav class="flex border-t">
         <button
-          v-for="tab in ['main', 'behaviors', 'prizes', 'records'] as const"
+          v-for="tab in ['main', 'kids', 'behaviors', 'prizes', 'records'] as const"
           :key="tab"
           @click="activeTab = tab"
           class="flex-1 py-3 text-center text-sm transition-colors"
           :class="activeTab === tab ? 'text-purple-600 border-b-2 border-purple-600' : 'text-gray-500 hover:text-gray-700'"
         >
-          {{ tab === 'main' ? '积分' : tab === 'behaviors' ? '行为' : tab === 'prizes' ? '奖项' : '记录' }}
+          {{ tab === 'main' ? '积分' : tab === 'kids' ? '小朋友' : tab === 'behaviors' ? '行为' : tab === 'prizes' ? '奖项' : '记录' }}
         </button>
       </nav>
     </header>
@@ -51,6 +52,11 @@ onMounted(async () => {
         <PointsDisplay />
         <BehaviorButtons />
         <LuckyWheel />
+      </template>
+
+      <!-- Kids Tab -->
+      <template v-else-if="activeTab === 'kids'">
+        <KidManager />
       </template>
 
       <!-- Behaviors Tab -->

@@ -33,6 +33,7 @@ logs/
 
 # Server data (for docker-compose deployment)
 data/
+uploads/
 
 # Misc
 *.tmp
