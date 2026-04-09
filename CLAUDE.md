@@ -38,6 +38,12 @@
 
 ## 开发阶段
 
+### Phase 8 - CI/CD 部署（GitHub Actions + 阿里云 ACR）✅
+- [x] 8.1 GitHub Actions workflow 自动构建推送镜像
+- [x] 8.2 阿里云 ACR 镜像仓库
+- [x] 8.3 docker-compose 阿里云服务器自动部署
+- [x] 8.4 SQLite 数据持久化（volume 挂载）
+
 ### Phase 1 - 后端基础（Go + Gin + SQLite）✅
 - [x] 1.1 项目骨架 + go mod init + config
 - [x] 1.2 数据模型定义（models/）
@@ -84,6 +90,7 @@ backend/
 ├── main.go
 ├── go.mod
 ├── go.sum
+├── Dockerfile              # 多阶段构建，alpine 基础镜像
 ├── config/
 │   └── config.go
 ├── models/
@@ -144,9 +151,19 @@ frontend/
 ├── package.json
 ├── tailwind.config.js
 ├── postcss.config.js
-└── vite.config.ts
+├── vite.config.ts
+├── Dockerfile                # 多阶段构建，node + nginx
+└── nginx.conf                # 反向代理配置（/api 转发后端）
 ```
+
+## 部署架构
+- **前端**：nginx 容器（端口 80），通过反向代理访问后端 API
+- **后端**：alpine 容器（端口 8080），SQLite 数据持久化到 `./data/points.db`
+- **镜像仓库**：阿里云 ACR（`registry.cn-hangzhou.aliyuncs.com/points-app`）
+- **服务器路径**：`/app/points-app/`
+- **触发条件**：push 到 GitHub main 分支
 
 ## 已知问题/注意事项
 - 后端已配置 CORS，允许 localhost:5173/5174/5175
 - 前后端分离部署时需各自启动（后端 :8080，前端 :5173+）
+- 部署后 CORS 不再影响前端（通过 nginx 反向代理同源访问）
