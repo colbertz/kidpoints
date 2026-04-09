@@ -31,6 +31,9 @@ logs/
 *.db
 *.db-journal
 
+# Server data (for docker-compose deployment)
+data/
+
 # Misc
 *.tmp
 *.bak
