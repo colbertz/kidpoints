@@ -92,8 +92,8 @@ func seedData() error {
 		avatar string
 		points int
 	}{
-		{"大宝", "🧒", 0},
-		{"二宝", "👧", 0},
+		{"大宝", "🧒", 10},
+		{"二宝", "👧", 10},
 	}
 	for _, k := range kids {
 		_, err := DB.Exec("INSERT INTO kids (name, avatar, points) VALUES (?, ?, ?)", k.name, k.avatar, k.points)
@@ -128,10 +128,17 @@ func seedData() error {
 		icon        string
 		probability float64
 	}{
-		{"一等奖", "🎉", 10},
-		{"二等奖", "🎁", 20},
-		{"三等奖", "🎀", 30},
-		{"再接再厉", "🍀", 40},
+		{"Switch半小时", "🎮", 3},
+		{"宝可梦3局", "🦄", 3},
+		{"XBOX", "🧗", 3},
+		{"吃大餐", "🍕", 5},
+		{"静坐5分钟", "🧘", 20},
+		{"动画片30分钟", "📺", 20},
+		{"什么都没有", "😀", 15},
+		{"诵经|背古诗", "📝", 15},
+		{"零食", "🍪", 10},
+		{"卡丁车", "🚘", 3},
+		{"抓娃娃", "🧸", 3},
 	}
 	for _, p := range prizes {
 		_, err := DB.Exec("INSERT INTO prizes (name, icon, probability) VALUES (?, ?, ?)", p.name, p.icon, p.probability)
