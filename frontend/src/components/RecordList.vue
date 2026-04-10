@@ -86,7 +86,7 @@ onMounted(() => {
           >
             <option :value="null">全部小朋友</option>
             <option v-for="kid in state.kids" :key="kid.id" :value="kid.id">
-              {{ kid.avatar }} {{ kid.name }}
+              {{ kid.name }}
             </option>
           </select>
           <button
