@@ -1,24 +1,490 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
+  /* Sky Blue Theme */
+  --sky: #81D4FA;
+  --ocean: #4FC3F7;
+  --sunny: #FFD54F;
+  --cloud: #F5F9FF;
+  --deep-blue: #1976D2;
+  --grass: #81C784;
+  --coral: #FF8A80;
+  --lavender: #B39DDB;
+  --mint: #A5D6A7;
+  --peach: #FFCCBC;
+
+  /* Semantic Colors */
+  --text: #37474F;
+  --text-light: #78909C;
+  --bg: #F5F9FF;
+  --card-bg: #FFFFFF;
+  --border: #E1F5FE;
+
+  /* Accent Colors */
+  --add-bg: linear-gradient(135deg, #81C784 0%, #66BB6A 100%);
+  --sub-bg: linear-gradient(135deg, #FF8A80 0%, #EF5350 100%);
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Nunito', system-ui, -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
 }
 
 #app {
   min-height: 100vh;
+  padding-bottom: 80px; /* Space for bottom nav */
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+/* Staggered entrance animation */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0) translateY(20px);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1) translateY(-5px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes floatUp {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scale(1.2);
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+/* Entrance animations with stagger */
+.animate-slide-up {
+  animation: slideUp 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-slide-up:nth-child(1) { animation-delay: 0.05s; }
+.animate-slide-up:nth-child(2) { animation-delay: 0.1s; }
+.animate-slide-up:nth-child(3) { animation-delay: 0.15s; }
+.animate-slide-up:nth-child(4) { animation-delay: 0.2s; }
+.animate-slide-up:nth-child(5) { animation-delay: 0.25s; }
+.animate-slide-up:nth-child(6) { animation-delay: 0.3s; }
+.animate-slide-up:nth-child(7) { animation-delay: 0.35s; }
+.animate-slide-up:nth-child(8) { animation-delay: 0.4s; }
+
+.animate-slide-in-right {
+  animation: slideInRight 0.35s ease-out forwards;
+}
+
+.animate-bounce-in {
+  animation: bounceIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Floating text animation for +N / -N */
+.floating-text {
+  position: absolute;
+  pointer-events: none;
+  animation: floatUp 0.8s ease-out forwards;
+  font-weight: 700;
+  font-size: 1.25rem;
+  z-index: 100;
+}
+
+/* ============================================
+   CARD STYLES
+   ============================================ */
+
+.card {
+  background: var(--card-bg);
+  border-radius: 20px;
+  box-shadow:
+    0 4px 20px rgba(25, 118, 210, 0.08),
+    0 2px 8px rgba(25, 118, 210, 0.04);
+  border: 2px solid var(--border);
+  overflow: hidden;
+}
+
+.card-elevated {
+  background: var(--card-bg);
+  border-radius: 24px;
+  box-shadow:
+    0 8px 32px rgba(25, 118, 210, 0.12),
+    0 4px 12px rgba(25, 118, 210, 0.08);
+  border: 2px solid var(--border);
+}
+
+/* ============================================
+   BUTTON STYLES
+   ============================================ */
+
+/* Base rounded button */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:active {
+  transform: scale(0.92);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Primary button - sky blue */
+.btn-primary {
+  background: linear-gradient(135deg, var(--sky) 0%, var(--ocean) 100%);
+  color: white;
+  box-shadow: 0 4px 16px rgba(79, 195, 247, 0.4);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(79, 195, 247, 0.5);
+}
+
+/* Add button - green gradient */
+.btn-add {
+  background: var(--add-bg);
+  color: white;
+  box-shadow: 0 4px 16px rgba(129, 199, 132, 0.4);
+}
+
+.btn-add:hover:not(:disabled) {
+  transform: scale(1.03);
+  box-shadow: 0 6px 20px rgba(129, 199, 132, 0.5);
+}
+
+/* Subtract button - coral gradient */
+.btn-sub {
+  background: var(--sub-bg);
+  color: white;
+  box-shadow: 0 4px 16px rgba(255, 138, 128, 0.4);
+}
+
+.btn-sub:hover:not(:disabled) {
+  transform: scale(1.03);
+  box-shadow: 0 6px 20px rgba(255, 138, 128, 0.5);
+}
+
+/* Ghost button */
+.btn-ghost {
+  background: transparent;
+  color: var(--deep-blue);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: rgba(25, 118, 210, 0.08);
+}
+
+/* ============================================
+   FORM ELEMENTS
+   ============================================ */
+
+input, select, textarea {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  background: white;
+  color: var(--text);
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--ocean);
+  box-shadow: 0 0 0 4px rgba(79, 195, 247, 0.2);
+}
+
+input::placeholder {
+  color: var(--text-light);
+}
+
+/* ============================================
+   DECORATIVE ELEMENTS
+   ============================================ */
+
+/* Cloud decoration */
+.cloud-bg {
+  position: relative;
+}
+
+.cloud-bg::before {
+  content: '☁️';
+  position: absolute;
+  font-size: 2rem;
+  opacity: 0.15;
+  top: -10px;
+  right: 10px;
+}
+
+/* Star decoration */
+.star-decoration {
+  position: relative;
+}
+
+.star-decoration::after {
+  content: '✨';
+  position: absolute;
+  font-size: 1rem;
+  opacity: 0.3;
+  top: -5px;
+  right: -5px;
+}
+
+/* ============================================
+   BADGE / TAG
+   ============================================ */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.badge-green {
+  background: rgba(129, 199, 132, 0.2);
+  color: #388E3C;
+}
+
+.badge-red {
+  background: rgba(255, 138, 128, 0.2);
+  color: #D32F2F;
+}
+
+.badge-blue {
+  background: rgba(79, 195, 247, 0.2);
+  color: var(--deep-blue);
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cloud);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--sky);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ocean);
+}
+
+/* ============================================
+   PAGE TRANSITIONS
+   ============================================ */
+
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.25s ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* ============================================
+   RESPONSIVE UTILITIES
+   ============================================ */
+
+/* Mobile-first: touch targets */
+@media (max-width: 640px) {
+  .btn {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0.875rem 1.25rem;
+  }
+}
+
+/* ============================================
+   GRADIENT BACKGROUNDS
+   ============================================ */
+
+.bg-gradient-sky {
+  background: linear-gradient(180deg, var(--cloud) 0%, rgba(129, 202, 250, 0.3) 100%);
+}
+
+.bg-gradient-card {
+  background: linear-gradient(135deg, rgba(129, 202, 250, 0.1) 0%, rgba(79, 195, 247, 0.05) 100%);
+}
+
+/* ============================================
+   SPECIAL EFFECTS
+   ============================================ */
+
+/* Shimmer effect for loading */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--cloud) 25%,
+    rgba(129, 202, 250, 0.3) 50%,
+    var(--cloud) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Glow effect */
+.glow {
+  box-shadow: 0 0 20px rgba(79, 195, 247, 0.5);
+}
+
+.glow-green {
+  box-shadow: 0 0 20px rgba(129, 199, 132, 0.5);
+}
+
+.glow-coral {
+  box-shadow: 0 0 20px rgba(255, 138, 128, 0.5);
 }

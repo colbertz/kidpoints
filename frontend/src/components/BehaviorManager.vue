@@ -55,100 +55,150 @@ async function handleDelete(id: number) {
 </script>
 
 <template>
-  <div class="p-4">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-lg font-semibold">行为管理</h2>
-      <button
-        @click="openAddForm"
-        class="px-3 py-1 bg-purple-500 text-white rounded-lg hover:bg-purple-600"
-      >
-        + 添加行为
-      </button>
+  <div class="space-y-4">
+    <!-- Header -->
+    <div class="card p-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-lg font-bold text-deep-blue flex items-center gap-2">
+          <span>✨</span>
+          <span>行为管理</span>
+        </h2>
+        <button
+          @click="openAddForm"
+          class="btn btn-primary text-sm px-4 py-2"
+        >
+          + 添加行为
+        </button>
+      </div>
     </div>
 
     <!-- Form Modal -->
-    <div v-if="showForm" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-6 w-96">
-        <h3 class="text-lg font-semibold mb-4">
-          {{ editingBehavior ? '编辑行为' : '添加行为' }}
-        </h3>
-        <form @submit.prevent="handleSubmit" class="space-y-4">
-          <div>
-            <label class="block text-sm text-gray-600 mb-1">名称</label>
-            <input
-              v-model="form.name"
-              type="text"
-              required
-              class="w-full px-3 py-2 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label class="block text-sm text-gray-600 mb-1">类型</label>
-            <select v-model="form.type" class="w-full px-3 py-2 border rounded-lg">
-              <option value="add">加分</option>
-              <option value="sub">减分</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm text-gray-600 mb-1">积分</label>
-            <input
-              v-model.number="form.points"
-              type="number"
-              required
-              min="1"
-              class="w-full px-3 py-2 border rounded-lg"
-            />
-          </div>
-          <div class="flex gap-2 justify-end">
-            <button
-              type="button"
-              @click="showForm = false"
-              class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
-            >
-              取消
-            </button>
-            <button
-              type="submit"
-              class="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600"
-            >
-              保存
-            </button>
-          </div>
-        </form>
+    <Teleport to="body">
+      <div v-if="showForm" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm">
+        <div class="card-elevated p-6 w-96 mx-4 animate-bounce-in">
+          <h3 class="text-lg font-bold text-deep-blue mb-4 flex items-center gap-2">
+            <span>{{ editingBehavior ? '✏️' : '➕' }}</span>
+            <span>{{ editingBehavior ? '编辑行为' : '添加行为' }}</span>
+          </h3>
+          <form @submit.prevent="handleSubmit" class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-600 mb-2">名称</label>
+              <input
+                v-model="form.name"
+                type="text"
+                required
+                class="w-full px-4 py-3 rounded-xl border-2 border-sky/30 focus:border-ocean transition-colors"
+                placeholder="例如：主动收拾玩具"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-600 mb-2">类型</label>
+              <div class="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  @click="form.type = 'add'"
+                  class="py-3 px-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
+                  :class="form.type === 'add'
+                    ? 'bg-gradient-to-r from-grass to-mint text-white shadow-md'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                >
+                  <span>➕</span>
+                  <span>加分</span>
+                </button>
+                <button
+                  type="button"
+                  @click="form.type = 'sub'"
+                  class="py-3 px-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
+                  :class="form.type === 'sub'
+                    ? 'bg-gradient-to-r from-coral to-red-400 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                >
+                  <span>➖</span>
+                  <span>减分</span>
+                </button>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-600 mb-2">积分</label>
+              <input
+                v-model.number="form.points"
+                type="number"
+                required
+                min="1"
+                class="w-full px-4 py-3 rounded-xl border-2 border-sky/30 focus:border-ocean transition-colors"
+              />
+            </div>
+            <div class="flex gap-3 justify-end pt-2">
+              <button
+                type="button"
+                @click="showForm = false"
+                class="btn btn-ghost px-4"
+              >
+                取消
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary px-6"
+              >
+                保存
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </Teleport>
 
     <!-- Behavior List -->
-    <div class="space-y-2">
+    <div class="space-y-3">
       <div
-        v-for="behavior in state.behaviors"
+        v-for="(behavior, index) in state.behaviors"
         :key="behavior.id"
-        class="flex items-center justify-between p-3 bg-white rounded-lg border"
-        :class="behavior.type === 'add' ? 'border-green-200' : 'border-red-200'"
+        class="card p-4 animate-slide-up border-l-4"
+        :class="[
+          behavior.type === 'add' ? 'border-l-grass' : 'border-l-coral',
+          { 'opacity-50': !behavior }
+        ]"
+        :style="{ animationDelay: `${index * 0.05}s` }"
       >
-        <div>
-          <div class="font-medium">{{ behavior.name }}</div>
-          <div class="text-sm" :class="behavior.type === 'add' ? 'text-green-600' : 'text-red-600'">
-            {{ behavior.type === 'add' ? '+' : '-' }}{{ behavior.points }} 分
+        <div class="flex items-center justify-between">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-xl">
+                {{ behavior.type === 'add' ? '✨' : '📝' }}
+              </span>
+              <span class="font-bold text-deep-blue">{{ behavior.name }}</span>
+            </div>
+            <div class="flex items-center gap-2 ml-7">
+              <span
+                class="badge text-sm font-bold"
+                :class="behavior.type === 'add' ? 'badge-green' : 'badge-red'"
+              >
+                {{ behavior.type === 'add' ? '+' : '-' }}{{ behavior.points }} 分
+              </span>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button
+              @click="openEditForm(behavior)"
+              class="btn btn-ghost p-2 text-sm"
+            >
+              ✏️
+            </button>
+            <button
+              @click="handleDelete(behavior.id)"
+              class="btn btn-ghost p-2 text-sm hover:text-coral"
+            >
+              🗑️
+            </button>
           </div>
         </div>
-        <div class="flex gap-2">
-          <button
-            @click="openEditForm(behavior)"
-            class="px-3 py-1 text-sm text-purple-600 hover:bg-purple-50 rounded"
-          >
-            编辑
-          </button>
-          <button
-            @click="handleDelete(behavior.id)"
-            class="px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded"
-          >
-            删除
-          </button>
-        </div>
       </div>
-      <div v-if="state.behaviors.length === 0" class="text-center text-gray-400 py-8">
-        暂无行为配置
+
+      <!-- Empty state -->
+      <div v-if="state.behaviors.length === 0" class="card p-8 text-center">
+        <div class="text-5xl mb-4">✨</div>
+        <p class="text-gray-400 font-medium">还没有行为配置</p>
+        <p class="text-gray-400 text-sm mt-1">点击上方按钮添加第一个行为</p>
       </div>
     </div>
   </div>

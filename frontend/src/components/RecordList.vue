@@ -55,7 +55,13 @@ function formatDate(dateStr: string) {
 
 function getKidName(kidId: number) {
   const kid = state.kids.find(k => k.id === kidId);
-  return kid ? `${kid.avatar} ${kid.name}` : `小朋友 ${kidId}`;
+  return kid ? `${kid.name}` : `小朋友 ${kidId}`;
+}
+
+function getBehaviorEmoji(record: Record) {
+  if (record.reversed) return '🚫';
+  if (record.points > 0) return '✨';
+  return '📝';
 }
 
 onMounted(() => {
@@ -64,101 +70,157 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="p-4">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-lg font-semibold">行为记录</h2>
-      <div class="flex gap-2 items-center">
-        <select
-          v-model="filterKidId"
-          @change="fetchRecords"
-          class="px-3 py-1 border rounded-lg text-sm"
-        >
-          <option :value="null">全部小朋友</option>
-          <option v-for="kid in state.kids" :key="kid.id" :value="kid.id">
-            {{ kid.avatar }} {{ kid.name }}
-          </option>
-        </select>
-        <button
-          @click="fetchRecords"
-          class="px-3 py-1 text-purple-600 hover:bg-purple-50 rounded-lg"
-        >
-          刷新
-        </button>
-      </div>
-    </div>
-
-    <div v-if="loading" class="text-center py-8 text-gray-400">
-      加载中...
-    </div>
-
-    <div v-else-if="records.length === 0" class="text-center text-gray-400 py-8">
-      暂无记录
-    </div>
-
-    <div v-else class="space-y-2">
-      <div
-        v-for="record in records"
-        :key="record.id"
-        class="p-3 bg-white rounded-lg border"
-        :class="record.reversed ? 'border-gray-200 opacity-50' : record.points > 0 ? 'border-green-200' : 'border-red-200'"
-      >
-        <div class="flex justify-between items-start">
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="font-medium">{{ record.behavior_name }}</span>
-              <span
-                class="text-sm px-2 py-0.5 rounded"
-                :class="record.points > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'"
-              >
-                {{ record.points > 0 ? '+' : '' }}{{ record.points }}
-              </span>
-            </div>
-            <div class="text-sm text-gray-500 mt-1">
-              {{ getKidName(record.kid_id) }} · {{ formatDate(record.created_at) }}
-            </div>
-            <div v-if="record.reversed" class="text-sm text-red-500 mt-1">
-              已撤销: {{ record.reversed_reason }} · {{ record.reversed_at }}
-            </div>
-          </div>
-          <button
-            v-if="!record.reversed"
-            @click="openReverseModal(record.id)"
-            class="px-2 py-1 text-xs text-gray-500 hover:bg-gray-100 rounded"
+  <div class="space-y-4">
+    <!-- Header -->
+    <div class="card p-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-lg font-bold text-deep-blue flex items-center gap-2">
+          <span>📋</span>
+          <span>行为记录</span>
+        </h2>
+        <div class="flex gap-2 items-center">
+          <select
+            v-model="filterKidId"
+            @change="fetchRecords"
+            class="px-3 py-2 border-2 border-sky/30 rounded-xl text-sm bg-white focus:border-ocean transition-colors"
           >
-            撤销
+            <option :value="null">全部小朋友</option>
+            <option v-for="kid in state.kids" :key="kid.id" :value="kid.id">
+              {{ kid.avatar }} {{ kid.name }}
+            </option>
+          </select>
+          <button
+            @click="fetchRecords"
+            class="btn btn-ghost p-2"
+            title="刷新"
+          >
+            🔄
           </button>
         </div>
       </div>
+    </div>
+
+    <!-- Loading state -->
+    <div v-if="loading" class="card p-8 text-center">
+      <div class="text-4xl mb-3 animate-float">⏳</div>
+      <p class="text-gray-400">加载中...</p>
+    </div>
+
+    <!-- Empty state -->
+    <div v-else-if="records.length === 0" class="card p-8 text-center">
+      <div class="text-5xl mb-4">📭</div>
+      <p class="text-gray-400 font-medium">暂无记录</p>
+      <p class="text-gray-400 text-sm mt-1">快去添加积分变化吧</p>
+    </div>
+
+    <!-- Records list -->
+    <div v-else class="space-y-3">
+      <TransitionGroup name="list">
+        <div
+          v-for="(record, index) in records"
+          :key="record.id"
+          class="card p-4 transition-all duration-300"
+          :class="[
+            record.reversed ? 'opacity-50' : '',
+            record.points > 0 ? 'border-l-4 border-l-grass' : 'border-l-4 border-l-coral'
+          ]"
+          :style="{ animationDelay: `${index * 0.05}s` }"
+        >
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <!-- Behavior name with emoji -->
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-lg">{{ getBehaviorEmoji(record) }}</span>
+                <span
+                  class="font-semibold"
+                  :class="record.reversed ? 'line-through text-gray-400' : 'text-deep-blue'"
+                >
+                  {{ record.behavior_name }}
+                </span>
+                <!-- Points badge -->
+                <span
+                  class="badge text-sm font-bold px-2 py-0.5"
+                  :class="record.points > 0 ? 'badge-green' : 'badge-red'"
+                >
+                  {{ record.points > 0 ? '+' : '' }}{{ record.points }}
+                </span>
+              </div>
+
+              <!-- Kid name & time -->
+              <div class="text-sm text-gray-500 ml-7">
+                {{ getKidName(record.kid_id) }} · {{ formatDate(record.created_at) }}
+              </div>
+
+              <!-- Reversed info -->
+              <div v-if="record.reversed" class="mt-2 ml-7 text-sm text-coral flex items-center gap-1">
+                <span>🚫</span>
+                <span>已撤销: {{ record.reversed_reason }}</span>
+                <span class="text-gray-400">· {{ record.reversed_at }}</span>
+              </div>
+            </div>
+
+            <!-- Reverse button (only for non-reversed) -->
+            <button
+              v-if="!record.reversed"
+              @click="openReverseModal(record.id)"
+              class="text-gray-400 hover:text-coral transition-colors p-2 rounded-lg hover:bg-coral/10"
+              title="撤销"
+            >
+              <span class="text-lg">↩️</span>
+            </button>
+          </div>
+        </div>
+      </TransitionGroup>
     </div>
 
     <!-- Reverse Modal -->
-    <div v-if="showReverseModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-6 w-80">
-        <h3 class="text-lg font-semibold mb-4">撤销记录</h3>
-        <div class="mb-4">
-          <label class="block text-sm text-gray-600 mb-1">撤销原因</label>
-          <input
-            v-model="reverseReason"
-            type="text"
-            class="w-full px-3 py-2 border rounded-lg"
-            autofocus
-          />
-        </div>
-        <div class="flex gap-2 justify-end">
-          <button
-            @click="showReverseModal = false"
-            class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
-          >
-            取消
-          </button>
-          <button
-            @click="handleReverse"
-            class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-          >
-            确认撤销
-          </button>
+    <Teleport to="body">
+      <div v-if="showReverseModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm">
+        <div class="card-elevated p-6 w-80 mx-4 animate-bounce-in">
+          <h3 class="text-lg font-bold text-deep-blue mb-4 flex items-center gap-2">
+            <span>🔄</span>
+            <span>撤销记录</span>
+          </h3>
+          <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-600 mb-2">撤销原因</label>
+            <input
+              v-model="reverseReason"
+              type="text"
+              class="w-full px-4 py-3 rounded-xl border-2 border-sky/30 focus:border-ocean transition-colors"
+              autofocus
+            />
+          </div>
+          <div class="flex gap-3 justify-end">
+            <button
+              @click="showReverseModal = false"
+              class="btn btn-ghost px-4 py-2"
+            >
+              取消
+            </button>
+            <button
+              @click="handleReverse"
+              class="btn btn-sub px-4 py-2"
+            >
+              确认撤销
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </Teleport>
   </div>
 </template>
+
+<style scoped>
+/* List transition animations */
+.list-enter-active {
+  animation: slideInRight 0.35s ease-out forwards;
+}
+
+.list-leave-active {
+  animation: slideInRight 0.25s ease-in reverse forwards;
+}
+
+.list-move {
+  transition: transform 0.35s ease;
+}
+</style>
