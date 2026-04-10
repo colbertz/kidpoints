@@ -30,10 +30,15 @@ const totalProbability = computed(() => {
 });
 
 // Calculate sector angles for each prize
+// If prizes <= 6, distribute by probability; otherwise equal distribution
 const sectors = computed(() => {
+  const prizeCount = state.prizes.length;
+  const isEqualDistribution = prizeCount > 6;
+  const sectorAngle = 360 / prizeCount;
   let currentAngle = 0;
+
   return state.prizes.map(prize => {
-    const angle = (prize.probability / totalProbability.value) * 360;
+    const angle = isEqualDistribution ? sectorAngle : (prize.probability / totalProbability.value) * 360;
     const sector = {
       prize,
       startAngle: currentAngle,
