@@ -7,10 +7,15 @@
 :root {
   /* Sky Blue Theme */
   --sky: #81D4FA;
+  --sky-light: #B3E5FC;
+  --sky-luminous: #E1F5FE;
   --ocean: #4FC3F7;
+  --ocean-deep: #29B6F6;
   --sunny: #FFD54F;
+  --sunny-glow: #FFECB3;
   --cloud: #F5F9FF;
   --deep-blue: #1976D2;
+  --deep-blue-dark: #1565C0;
   --grass: #81C784;
   --coral: #FF8A80;
   --lavender: #B39DDB;
@@ -20,13 +25,21 @@
   /* Semantic Colors */
   --text: #37474F;
   --text-light: #78909C;
-  --bg: #F5F9FF;
-  --card-bg: #FFFFFF;
-  --border: #E1F5FE;
+  --bg: #E8F5FE;
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-bg-solid: #FFFFFF;
+  --border: rgba(129, 212, 250, 0.4);
+  --glass: rgba(255, 255, 255, 0.6);
 
   /* Accent Colors */
   --add-bg: linear-gradient(135deg, #81C784 0%, #66BB6A 100%);
   --sub-bg: linear-gradient(135deg, #FF8A80 0%, #EF5350 100%);
+
+  /* Background layers */
+  --bg-sky-top: #87CEEB;
+  --bg-sky-mid: #B3E5FC;
+  --bg-sky-bottom: #E1F5FE;
+  --bg-horizon: #F5F9FF;
 }
 
 * {
@@ -36,11 +49,36 @@
 body {
   margin: 0;
   font-family: 'Nunito', system-ui, -apple-system, sans-serif;
-  background: var(--bg);
+  background: linear-gradient(
+    180deg,
+    var(--bg-sky-top) 0%,
+    var(--bg-sky-mid) 35%,
+    var(--bg-sky-bottom) 70%,
+    var(--bg-horizon) 100%
+  );
+  background-attachment: fixed;
   color: var(--text);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Animated sky background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 20%, rgba(255, 213, 79, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 80% 30%, rgba(129, 212, 250, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 60% at 50% 100%, rgba(79, 195, 247, 0.1) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* Smooth scroll */
@@ -50,7 +88,9 @@ html {
 
 #app {
   min-height: 100vh;
-  padding-bottom: 80px; /* Space for bottom nav */
+  padding-bottom: 80px;
+  position: relative;
+  z-index: 1;
 }
 
 /* ============================================
@@ -203,22 +243,61 @@ html {
    ============================================ */
 
 .card {
-  background: var(--card-bg);
-  border-radius: 20px;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.7) 0%,
+    rgba(255, 255, 255, 0.5) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
   box-shadow:
-    0 4px 20px rgba(25, 118, 210, 0.08),
-    0 2px 8px rgba(25, 118, 210, 0.04);
-  border: 2px solid var(--border);
+    0 8px 32px rgba(25, 118, 210, 0.1),
+    0 4px 16px rgba(25, 118, 210, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
   overflow: hidden;
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,1), transparent);
+  pointer-events: none;
 }
 
 .card-elevated {
-  background: var(--card-bg);
-  border-radius: 24px;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(255, 255, 255, 0.65) 100%
+  );
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 28px;
   box-shadow:
-    0 8px 32px rgba(25, 118, 210, 0.12),
-    0 4px 12px rgba(25, 118, 210, 0.08);
-  border: 2px solid var(--border);
+    0 12px 48px rgba(25, 118, 210, 0.12),
+    0 6px 20px rgba(25, 118, 210, 0.08),
+    inset 0 2px 0 rgba(255, 255, 255, 0.95);
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  position: relative;
+}
+
+.card-elevated::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--sky), var(--ocean), var(--sky));
+  opacity: 0.7;
+  pointer-events: none;
 }
 
 /* ============================================
@@ -309,7 +388,8 @@ input, select, textarea {
   padding: 0.75rem 1rem;
   border: 2px solid var(--border);
   border-radius: 16px;
-  background: white;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
   color: var(--text);
   transition: all 0.2s ease;
   outline: none;
@@ -444,11 +524,96 @@ input::placeholder {
    ============================================ */
 
 .bg-gradient-sky {
-  background: linear-gradient(180deg, var(--cloud) 0%, rgba(129, 202, 250, 0.3) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(135, 206, 235, 0.3) 0%,
+    rgba(179, 229, 252, 0.4) 50%,
+    rgba(225, 245, 254, 0.5) 100%
+  );
 }
 
 .bg-gradient-card {
-  background: linear-gradient(135deg, rgba(129, 202, 250, 0.1) 0%, rgba(79, 195, 247, 0.05) 100%);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(241, 245, 249, 0.8) 100%);
+}
+
+/* Glassmorphism utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.glass-dark {
+  background: rgba(25, 118, 210, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Dreamy glow effects */
+.dream-glow {
+  box-shadow:
+    0 0 60px rgba(129, 212, 250, 0.3),
+    0 0 100px rgba(79, 195, 247, 0.2);
+}
+
+.dream-glow-warm {
+  box-shadow:
+    0 0 40px rgba(255, 213, 79, 0.3),
+    0 0 80px rgba(255, 213, 79, 0.2);
+}
+
+/* Starry background pattern */
+.stars-bg {
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, rgba(255, 213, 79, 0.4), transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(255, 213, 79, 0.3), transparent),
+    radial-gradient(2px 2px at 130px 80px, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 160px 30px, rgba(129, 212, 250, 0.4), transparent);
+  background-size: 200px 100px;
+}
+
+/* Floating cloud decoration */
+@keyframes drift {
+  0%, 100% {
+    transform: translateX(0) translateY(0);
+  }
+  25% {
+    transform: translateX(5px) translateY(-3px);
+  }
+  50% {
+    transform: translateX(10px) translateY(0);
+  }
+  75% {
+    transform: translateX(5px) translateY(3px);
+  }
+}
+
+.drift {
+  animation: drift 8s ease-in-out infinite;
+}
+
+.drift-slow {
+  animation: drift 12s ease-in-out infinite;
+  animation-delay: -4s;
+}
+
+/* Soft shimmer for decorative elements */
+@keyframes shimmer-soft {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+.shimmer-soft {
+  animation: shimmer-soft 4s ease-in-out infinite;
 }
 
 /* ============================================

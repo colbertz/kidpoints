@@ -34,18 +34,48 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-sky">
+  <div class="min-h-screen relative overflow-hidden">
+    <!-- Animated sky background layers -->
+    <div class="fixed inset-0 pointer-events-none select-none" aria-hidden="true">
+      <!-- Gradient orbs -->
+      <div class="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-gradient-to-br from-sky/30 to-transparent blur-3xl animate-pulse-soft"></div>
+      <div class="absolute top-1/3 right-0 w-80 h-80 rounded-full bg-gradient-to-bl from-sunny/20 to-transparent blur-3xl animate-pulse-soft" style="animation-delay: 1s;"></div>
+      <div class="absolute bottom-1/4 left-0 w-72 h-72 rounded-full bg-gradient-to-tr from-mint/25 to-transparent blur-3xl animate-pulse-soft" style="animation-delay: 2s;"></div>
+
+      <!-- Floating clouds - large background clouds -->
+      <div class="absolute top-16 -left-20 text-8xl opacity-20 drift">☁️</div>
+      <div class="absolute top-32 right-10 text-6xl opacity-15 drift-slow">☁️</div>
+      <div class="absolute top-64 left-20 text-5xl opacity-10 drift" style="animation-delay: -3s;">☁️</div>
+      <div class="absolute bottom-40 right-1/4 text-7xl opacity-15 drift-slow" style="animation-delay: -6s;">☁️</div>
+
+      <!-- Floating stars/sparkles -->
+      <div class="absolute top-20 left-1/3 text-xl shimmer-soft" style="animation-delay: 0s;">✨</div>
+      <div class="absolute top-40 right-1/4 text-lg shimmer-soft" style="animation-delay: 1.5s;">⭐</div>
+      <div class="absolute top-56 left-1/4 text-base shimmer-soft" style="animation-delay: 0.8s;">🌟</div>
+      <div class="absolute bottom-1/3 right-1/3 text-xl shimmer-soft" style="animation-delay: 2.2s;">✨</div>
+      <div class="absolute top-48 left-1/2 text-lg shimmer-soft" style="animation-delay: 1.2s;">💫</div>
+      <div class="absolute bottom-1/2 left-1/3 text-base shimmer-soft" style="animation-delay: 0.5s;">⭐</div>
+
+      <!-- Small decorative elements -->
+      <div class="absolute top-1/2 right-8 text-2xl opacity-10 drift" style="animation-delay: -2s;">🌸</div>
+      <div class="absolute bottom-1/3 left-8 text-xl opacity-12 drift-slow">🦋</div>
+      <div class="absolute top-1/4 left-12 text-lg opacity-10 drift" style="animation-delay: -5s;">🌺</div>
+    </div>
+
     <!-- Header -->
-    <header class="bg-white/80 backdrop-blur-sm sticky top-0 z-40 border-b border-sky/20">
-      <div class="text-center py-3 px-4">
-        <h1 class="text-xl font-black text-deep-blue tracking-wide">
+    <header class="glass sticky top-0 z-40 border-b border-white/30">
+      <div class="text-center py-3 px-4 relative">
+        <!-- Decorative elements on header -->
+        <div class="absolute left-4 top-1/2 -translate-y-1/2 text-lg opacity-40">🌈</div>
+        <div class="absolute right-4 top-1/2 -translate-y-1/2 text-lg opacity-40">🌈</div>
+        <h1 class="text-xl font-black text-deep-blue tracking-wide drop-shadow-sm">
           ⭐ 积分小助手 ⭐
         </h1>
       </div>
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-2xl mx-auto px-4 py-4">
+    <main class="max-w-2xl mx-auto px-4 py-4 relative z-10">
       <Transition name="page" mode="out-in">
         <!-- Main Tab: Points Display -->
         <template v-if="activeTab === 'main'">
@@ -80,16 +110,16 @@ onMounted(async () => {
     </main>
 
     <!-- Bottom Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-sky/20 z-50 safe-area-bottom">
+    <nav class="glass fixed bottom-0 left-0 right-0 border-t border-white/40 z-50 safe-area-bottom">
       <div class="max-w-2xl mx-auto flex justify-around items-center py-2">
         <button
           v-for="tab in tabs"
           :key="tab.key"
           @click="activeTab = tab.key"
-          class="flex flex-col items-center justify-center py-2 px-4 rounded-2xl transition-all duration-200 min-w-[60px]"
+          class="flex flex-col items-center justify-center py-2 px-4 rounded-2xl transition-all duration-200 min-w-[60px] relative"
           :class="activeTab === tab.key
             ? 'text-deep-blue scale-105'
-            : 'text-gray-400 hover:text-sky active:scale-95'"
+            : 'text-gray-500 hover:text-sky active:scale-95'"
         >
           <span class="text-2xl transition-transform duration-200" :class="activeTab === tab.key ? 'animate-bounce-in' : ''">
             {{ tab.icon }}
@@ -98,7 +128,7 @@ onMounted(async () => {
           <!-- Active indicator -->
           <div
             v-if="activeTab === tab.key"
-            class="absolute -bottom-1 w-8 h-1 bg-gradient-to-r from-sky to-ocean rounded-full"
+            class="absolute -bottom-1 w-8 h-1 bg-gradient-to-r from-sky to-ocean rounded-full shadow-lg shadow-ocean/30"
           ></div>
         </button>
       </div>
@@ -114,7 +144,7 @@ onMounted(async () => {
 /* Ensure content doesn't get hidden behind bottom nav on notched devices */
 @media (max-width: 767px) {
   main {
-    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0));
+    padding-bottom: calc(90px + env(safe-area-inset-bottom, 0));
   }
 }
 </style>

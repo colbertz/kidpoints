@@ -100,7 +100,7 @@ async function handleDelete(id: number) {
                   class="py-3 px-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
                   :class="form.type === 'add'
                     ? 'bg-gradient-to-r from-grass to-mint text-white shadow-md'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                    : 'bg-sky/15 text-gray-600 hover:bg-sky/25'"
                 >
                   <span>➕</span>
                   <span>加分</span>
@@ -111,7 +111,7 @@ async function handleDelete(id: number) {
                   class="py-3 px-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
                   :class="form.type === 'sub'
                     ? 'bg-gradient-to-r from-coral to-red-400 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                    : 'bg-sky/15 text-gray-600 hover:bg-sky/25'"
                 >
                   <span>➖</span>
                   <span>减分</span>

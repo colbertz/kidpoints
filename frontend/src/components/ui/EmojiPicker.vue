@@ -34,7 +34,7 @@ function selectEmoji(emoji: string) {
       <button
         type="button"
         @click="showPicker = !showPicker"
-        class="w-12 h-10 border rounded-lg text-2xl flex items-center justify-center bg-gray-50 hover:bg-gray-100"
+        class="w-12 h-10 border rounded-lg text-2xl flex items-center justify-center bg-sky/10 hover:bg-sky/20 transition-colors"
       >
         {{ modelValue || '👍' }}
       </button>
@@ -49,7 +49,7 @@ function selectEmoji(emoji: string) {
 
     <div
       v-if="showPicker"
-      class="absolute top-full left-0 mt-1 w-72 h-64 bg-white border rounded-lg shadow-lg overflow-auto z-50"
+      class="absolute top-full left-0 mt-1 w-72 h-64 bg-white/95 backdrop-blur-sm border border-sky/20 rounded-lg shadow-lg overflow-auto z-50"
       @click.stop
     >
       <div class="grid grid-cols-8 gap-1 p-2">

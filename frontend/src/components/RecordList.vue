@@ -82,7 +82,7 @@ onMounted(() => {
           <select
             v-model="filterKidId"
             @change="fetchRecords"
-            class="px-3 py-2 border-2 border-sky/30 rounded-xl text-sm bg-white focus:border-ocean transition-colors"
+            class="px-3 py-2 border-2 border-sky/30 rounded-xl text-sm bg-sky/10 focus:border-ocean transition-colors"
           >
             <option :value="null">全部小朋友</option>
             <option v-for="kid in state.kids" :key="kid.id" :value="kid.id">

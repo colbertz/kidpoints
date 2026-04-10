@@ -26,7 +26,7 @@ function selectKid(kid: typeof state.currentKid) {
         class="relative flex flex-col items-center p-3 rounded-3xl transition-all duration-300 min-w-[90px]"
         :class="state.currentKid?.id === kid.id
           ? 'bg-gradient-to-b from-sky/20 to-ocean/10 scale-105'
-          : 'hover:bg-gray-50 opacity-70 hover:opacity-100'"
+          : 'hover:bg-sky/10 opacity-70 hover:opacity-100'"
       >
         <!-- Avatar container with decorative frame -->
         <div
@@ -49,7 +49,7 @@ function selectKid(kid: typeof state.currentKid) {
           ></div>
 
           <!-- Avatar image or emoji -->
-          <div class="w-full h-full rounded-full overflow-hidden bg-white flex items-center justify-center">
+          <div class="w-full h-full rounded-full overflow-hidden bg-gradient-to-br from-sky/20 to-ocean/10 flex items-center justify-center">
             <img
               v-if="kid.avatar.startsWith('/uploads')"
               :src="kid.avatar"
@@ -80,7 +80,7 @@ function selectKid(kid: typeof state.currentKid) {
           class="mt-1 px-2 py-0.5 rounded-full text-xs font-semibold"
           :class="state.currentKid?.id === kid.id
             ? 'bg-ocean/20 text-deep-blue'
-            : 'bg-gray-100 text-gray-500'"
+            : 'bg-sky/10 text-gray-500'"
         >
           {{ kid.points }}分
         </div>

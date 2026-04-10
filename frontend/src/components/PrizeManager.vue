@@ -146,7 +146,7 @@ async function handleDelete(id: number) {
             <div class="flex-1">
               <div class="font-bold text-deep-blue">{{ prize.name }}</div>
               <div class="flex items-center gap-2 mt-1">
-                <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div class="flex-1 h-2 bg-sky/20 rounded-full overflow-hidden">
                   <div
                     class="h-full bg-gradient-to-r from-ocean to-sky rounded-full transition-all duration-500"
                     :style="{ width: `${prize.probability}%` }"

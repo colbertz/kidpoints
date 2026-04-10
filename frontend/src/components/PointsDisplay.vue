@@ -7,13 +7,21 @@ const isAnimating = ref(false);
 const displayPoints = ref(0);
 
 // Animate points when they change
+// Sync displayPoints when kids data is loaded
+watch(() => state.kids, (kids) => {
+  if (kids.length > 0 && state.currentKid) {
+    displayPoints.value = state.currentKid.points;
+  }
+}, { immediate: true });
+
+// Animate points when they change
 watch(() => state.currentKid?.points, (newPoints, oldPoints) => {
   if (newPoints === undefined || oldPoints === undefined) return;
 
   if (newPoints !== oldPoints) {
     animatePoints(oldPoints, newPoints);
   }
-}, { immediate: true });
+});
 
 onMounted(() => {
   if (state.currentKid) {

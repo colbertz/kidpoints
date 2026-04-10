@@ -94,7 +94,7 @@ function drawWheel() {
 
     // Draw icon
     const midAngle = (startAngle + endAngle) / 2;
-    const iconRadius = radius * 0.85;
+    const iconRadius = radius * 0.9;
     const iconX = centerX + Math.cos(midAngle) * iconRadius;
     const iconY = centerY + Math.sin(midAngle) * iconRadius;
 
@@ -170,10 +170,8 @@ async function spin() {
     const drawResult = await api.draw(state.currentKid.id);
     result.value = drawResult;
 
-    // Update points locally
-    if (state.currentKid) {
-      state.currentKid.points -= 2;
-    }
+    // Refresh kids data to sync points display
+    await state.fetchKids();
 
     // Find the winning sector
     const prizeIndex = state.prizes.findIndex(p => p.id === drawResult.id);
@@ -246,7 +244,7 @@ watch(() => state.prizes, () => {
             boxShadow: '0 10px 40px rgba(25, 118, 210, 0.3)',
           }"
         >
-          <canvas ref="wheelCanvas" width="480" height="480" />
+          <canvas ref="wheelCanvas" width="420" height="420" />
         </div>
 
         <!-- Center Button with sun -->
@@ -271,7 +269,7 @@ watch(() => state.prizes, () => {
           <div
             v-for="prize in state.prizes"
             :key="prize.id"
-            class="flex items-center gap-2 bg-white/60 rounded-xl px-3 py-2"
+            class="flex items-center gap-2 bg-sky/10 rounded-xl px-3 py-2"
           >
             <span class="text-xl">{{ prize.icon }}</span>
             <span class="flex-1 truncate text-sm font-medium text-gray-700">{{ prize.name }}</span>

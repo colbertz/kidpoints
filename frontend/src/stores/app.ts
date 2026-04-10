@@ -17,8 +17,15 @@ const state = reactive({
     try {
       const kids = await api.getKids();
       state.kids = kids;
-      // Keep currentKid if still exists, otherwise select first
-      if (!state.currentKid || !kids.find(k => k.id === state.currentKid?.id)) {
+      // Update currentKid if it exists in the new kids list
+      if (state.currentKid) {
+        const updatedKid = kids.find(k => k.id === state.currentKid?.id);
+        if (updatedKid) {
+          state.currentKid = { ...updatedKid };
+        } else {
+          state.currentKid = kids[0] || null;
+        }
+      } else {
         state.currentKid = kids[0] || null;
       }
       state.loading = false;
